@@ -30,11 +30,11 @@ export interface MeViewModel {
 }
 
 export const TOKEN_SETTINGS = {
-    ACCESS_TOKEN_EXPIRATION: '10s',
-    REFRESH_TOKEN_EXPIRATION: '20s',
+    ACCESS_TOKEN_EXPIRATION: '1h',
+    REFRESH_TOKEN_EXPIRATION: '24h',
     REFRESH_TOKEN_COOKIE: {
         httpOnly: true,
         secure: true,
-        maxAge: 20 * 1000 // 20 seconds in milliseconds
+        maxAge: 24 * 60 * 60 * 1000
     }
 };

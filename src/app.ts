@@ -14,7 +14,6 @@ export const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(SETTINGS.PATH.AUTH, securityDevicesRouter);
 app.use(SETTINGS.PATH.USERS, usersRouter);
 app.use(SETTINGS.PATH.AUTH, authRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);

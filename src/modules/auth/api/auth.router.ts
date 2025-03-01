@@ -2,10 +2,11 @@ import { Router } from "express";
 import { authController } from "../../../configs/compositions/auth.composition";
 import { authValidationMiddleware } from "../../../configs/compositions/auth.composition";
 import {jwtAuthMiddleware} from "../../../shared/infrastructures/middlewares/jwt-auth.middleware";
+import {rateLimiterMiddleware} from "../../../shared/infrastructures/middlewares/rate-limiter.middleware";
 
 export const authRouter = Router();
 
-authRouter.post('/login', authController.login);
+authRouter.post('/login', rateLimiterMiddleware('/auth/login'), authController.login);
 
 authRouter.post('/registration',
     authValidationMiddleware.registration,

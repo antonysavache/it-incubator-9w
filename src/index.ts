@@ -3,10 +3,15 @@ import { SETTINGS } from "./configs/settings";
 import { connectToDatabase } from "./shared/infrastructures/db/mongo-db";
 import {
     blogsCommandRepository,
-    blogsQueryRepository, commentsCommandRepository, commentsQueryRepository,
+    blogsQueryRepository,
+    commentsCommandRepository,
+    commentsQueryRepository,
+    deviceCommandRepository,
+    deviceQueryRepository,
     postsCommandRepository,
     postsQueryRepository,
-    tokenCommandRepository, tokenQueryRepository,
+    tokenCommandRepository,
+    tokenQueryRepository,
     userConfirmationRepository,
     usersCommandRepository,
     usersQueryRepository
@@ -29,6 +34,8 @@ async function startApp() {
         userConfirmationRepository.init();
         commentsCommandRepository.init();
         commentsQueryRepository.init();
+        deviceCommandRepository.init();
+        deviceQueryRepository.init();
         app.listen(SETTINGS.PORT, () => {
             console.log(`Server started on port: ${SETTINGS.PORT}`);
         });
