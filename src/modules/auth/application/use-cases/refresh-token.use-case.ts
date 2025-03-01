@@ -1,13 +1,19 @@
+// src/modules/auth/application/use-cases/refresh-token.use-case.ts
+// Update to handle device info
 import { Result } from "../../../../shared/infrastructures/result";
 import { TokenCommandRepository } from "../../infrastructure/repositories/token-command.repository";
 import { TokenQueryRepository } from "../../infrastructure/repositories/token-query.repository";
 import { TOKEN_SETTINGS } from "../../domain/interfaces/token.interface";
 import { JwtService } from "../../../../shared/services/jwt.service";
+import { DeviceCommandRepository } from "../../infrastructure/repositories/device-command.repository";
+import { DeviceQueryRepository } from "../../infrastructure/repositories/device-query.repository";
 
 export class RefreshTokenUseCase {
     constructor(
         private tokenCommandRepository: TokenCommandRepository,
-        private tokenQueryRepository: TokenQueryRepository
+        private tokenQueryRepository: TokenQueryRepository,
+        private deviceCommandRepository: DeviceCommandRepository,
+        private deviceQueryRepository: DeviceQueryRepository
     ) {}
 
     async execute(refreshToken: string): Promise<Result<{ accessToken: string, refreshToken: string }>> {
@@ -19,7 +25,7 @@ export class RefreshTokenUseCase {
 
             // Verify JWT token structure and expiration
             const payload = JwtService.verifyToken(refreshToken);
-            if (!payload) {
+            if (!payload || !payload.deviceId) {
                 return Result.fail('Invalid refresh token');
             }
 
@@ -29,9 +35,16 @@ export class RefreshTokenUseCase {
                 return Result.fail('Invalid refresh token');
             }
 
+            // Check if device exists and is active
+            const device = await this.deviceQueryRepository.findByDeviceId(payload.deviceId);
+            if (!device) {
+                return Result.fail('Device session not found');
+            }
+
             // Check if token has expired in database
             if (new Date() > tokenDoc.expiresAt) {
                 await this.tokenCommandRepository.invalidateToken(refreshToken);
+                await this.deviceCommandRepository.deactivateDevice(payload.deviceId);
                 return Result.fail('Token expired');
             }
 
@@ -46,7 +59,8 @@ export class RefreshTokenUseCase {
 
             const newRefreshToken = JwtService.createJWT(
                 payload.userId,
-                TOKEN_SETTINGS.REFRESH_TOKEN_EXPIRATION
+                TOKEN_SETTINGS.REFRESH_TOKEN_EXPIRATION,
+                payload.deviceId
             );
 
             // Save new tokens to database
@@ -55,6 +69,11 @@ export class RefreshTokenUseCase {
                 newAccessToken,
                 newRefreshToken
             );
+
+            // Update device last active date
+            const now = new Date();
+            const newExpiry = new Date(now.getTime() + 20 * 1000); // 20 seconds
+            await this.deviceCommandRepository.updateLastActiveDate(payload.deviceId, now, newExpiry);
 
             // Return new tokens
             return Result.ok({

@@ -28,6 +28,7 @@ export const SETTINGS = {
         POSTS: '/posts',
         COMMENTS: '/comments',
         USERS: '/users',
-        AUTH: '/auth'
+        AUTH: '/auth',
+        SECURITY_DEVICES: '/security',
     }
 };

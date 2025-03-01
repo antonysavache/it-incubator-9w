@@ -1,12 +1,15 @@
+// src/modules/auth/application/use-cases/logout.use-case.ts
 import { Result } from "../../../../shared/infrastructures/result";
 import { TokenCommandRepository } from "../../infrastructure/repositories/token-command.repository";
 import { TokenQueryRepository } from "../../infrastructure/repositories/token-query.repository";
 import { JwtService } from "../../../../shared/services/jwt.service";
+import { DeviceCommandRepository } from "../../infrastructure/repositories/device-command.repository";
 
 export class LogoutUseCase {
     constructor(
         private tokenCommandRepository: TokenCommandRepository,
-        private tokenQueryRepository: TokenQueryRepository
+        private tokenQueryRepository: TokenQueryRepository,
+        private deviceCommandRepository: DeviceCommandRepository
     ) {}
 
     async execute(refreshToken: string): Promise<Result<void>> {
@@ -18,7 +21,7 @@ export class LogoutUseCase {
 
             // Verify JWT token structure and expiration
             const payload = JwtService.verifyToken(refreshToken);
-            if (!payload) {
+            if (!payload || !payload.deviceId) {
                 return Result.fail('Invalid refresh token');
             }
 
@@ -35,6 +38,9 @@ export class LogoutUseCase {
 
             // Invalidate the token
             await this.tokenCommandRepository.invalidateToken(refreshToken);
+
+            // Deactivate the device session
+            await this.deviceCommandRepository.deactivateDevice(payload.deviceId);
 
             return Result.ok();
         } catch (error) {

@@ -23,7 +23,10 @@ export class AuthController {
 
     login = async (req: Request<{}, {}, LoginDTO>, res: Response) => {
         try {
-            const result = await this.loginUseCase.execute(req.body);
+            const userAgent = req.headers['user-agent'] || 'Unknown Device';
+            const ip = req.ip || '0.0.0.0';
+
+            const result = await this.loginUseCase.execute(req.body, userAgent, ip);
 
             if (result.isFailure()) {
                 return res.sendStatus(401);

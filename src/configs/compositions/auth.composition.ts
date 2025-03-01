@@ -9,6 +9,7 @@ import { GetMeUseCase } from "../../modules/auth/application/use-cases/get-me.us
 import { EmailService } from "../../modules/auth/infrastructure/services/email.service";
 import { AuthValidationMiddleware } from "../../modules/auth/api/auth-validation.middleware";
 import {
+    deviceCommandRepository, deviceQueryRepository,
     tokenCommandRepository,
     tokenQueryRepository,
     userConfirmationRepository,
@@ -21,7 +22,8 @@ export const emailService = new EmailService();
 
 export const loginUseCase = new LoginUseCase(
     usersQueryRepository,
-    tokenCommandRepository
+    tokenCommandRepository,
+    deviceCommandRepository
 );
 
 export const registerUserUseCase = new RegisterUserUseCase(
@@ -44,12 +46,15 @@ export const resendConfirmationUseCase = new ResendConfirmationUseCase(
 
 export const refreshTokenUseCase = new RefreshTokenUseCase(
     tokenCommandRepository,
-    tokenQueryRepository
+    tokenQueryRepository,
+    deviceCommandRepository,
+    deviceQueryRepository
 );
 
 export const logoutUseCase = new LogoutUseCase(
     tokenCommandRepository,
-    tokenQueryRepository
+    tokenQueryRepository,
+    deviceCommandRepository
 );
 
 export const getMeUseCase = new GetMeUseCase(

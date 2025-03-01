@@ -11,6 +11,8 @@ import {CommentsQueryRepository} from "../../modules/comments/infrastructure/rep
 import {
     CommentsCommandRepository
 } from "../../modules/comments/infrastructure/repositories/comments-command.repository";
+import { DeviceCommandRepository } from "../../modules/auth/infrastructure/repositories/device-command.repository";
+import { DeviceQueryRepository } from "../../modules/auth/infrastructure/repositories/device-query.repository";
 
 export const blogsQueryRepository = new BlogsQueryRepository();
 export const blogsCommandRepository = new BlogsCommandRepository();
@@ -23,3 +25,5 @@ export const tokenQueryRepository = new TokenQueryRepository();
 export const userConfirmationRepository = new UserConfirmationRepository();
 export const commentsQueryRepository = new CommentsQueryRepository();
 export const commentsCommandRepository = new CommentsCommandRepository();
+export const deviceCommandRepository = new DeviceCommandRepository();
+export const deviceQueryRepository = new DeviceQueryRepository();

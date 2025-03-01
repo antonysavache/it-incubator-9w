@@ -59,15 +59,20 @@ export abstract class BaseQueryRepository<T extends { _id: ObjectId; }> {
         searchParams: SearchParam[],
         additionalFilter: Record<string, any> = {}
     ): Filter<T> {
+        if (searchParams.length === 0) {
+            return additionalFilter as Filter<T>;
+        }
+
         const conditions = searchParams.map(param => ({
             [param.fieldName]: param.isExact
                 ? param.value
                 : { $regex: param.value, $options: 'i' }
         }));
 
-        return conditions.length
-            ? { ...additionalFilter, $or: conditions }
-            : additionalFilter;
+        return {
+            ...additionalFilter,
+            $or: conditions
+        } as Filter<T>;
     }
 
     protected toViewModel(model: WithId<T>): ToViewModel<T> {

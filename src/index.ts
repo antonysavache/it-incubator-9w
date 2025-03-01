@@ -16,6 +16,7 @@ import {
 async function startApp() {
     try {
         await connectToDatabase();
+        app.set('trust proxy', true);
         console.log('Connected to MongoDB');
         blogsQueryRepository.init();
         blogsCommandRepository.init();
