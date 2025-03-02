@@ -6,7 +6,7 @@ import { refreshTokenMiddleware } from "../../../shared/infrastructures/middlewa
 export const securityDevicesRouter = Router();
 
 securityDevicesRouter.get('/devices',
-    jwtAuthMiddleware,
+    refreshTokenMiddleware,
     securityDevicesController.getUserDevices
 );
 
