@@ -54,7 +54,8 @@ export const refreshTokenUseCase = new RefreshTokenUseCase(
 export const logoutUseCase = new LogoutUseCase(
     tokenCommandRepository,
     tokenQueryRepository,
-    deviceCommandRepository
+    deviceCommandRepository,
+    deviceQueryRepository
 );
 
 export const getMeUseCase = new GetMeUseCase(
