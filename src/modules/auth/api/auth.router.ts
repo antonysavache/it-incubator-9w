@@ -9,16 +9,19 @@ export const authRouter = Router();
 authRouter.post('/login', rateLimiterMiddleware('/auth/login'), authController.login);
 
 authRouter.post('/registration',
+    rateLimiterMiddleware('/registration'),
     authValidationMiddleware.registration,
     authController.register
 );
 
 authRouter.post('/registration-confirmation',
+    rateLimiterMiddleware('/registration-confirmation'),
     authValidationMiddleware.confirmRegistration,
     authController.confirmRegistration
 );
 
 authRouter.post('/registration-email-resending',
+    rateLimiterMiddleware('/registration-email-resending'),
     authValidationMiddleware.resendEmail,
     authController.resendConfirmation
 );

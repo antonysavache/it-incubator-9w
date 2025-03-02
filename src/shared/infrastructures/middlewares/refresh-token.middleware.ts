@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { JwtService } from "../../services/jwt.service";
 import { tokenQueryRepository } from "../../../configs/compositions/repositories";
 import { RequestWithUser } from "../../types/express";
@@ -13,24 +13,24 @@ export const refreshTokenMiddleware = async (req: RequestWithUser, res: Response
     try {
         const payload = JwtService.verifyToken(refreshToken);
 
-        if (!payload) {
+        if (!payload || !payload.userId) {
             return res.sendStatus(401);
         }
 
         const tokenDoc = await tokenQueryRepository.findValidToken(refreshToken, 'REFRESH');
-
         if (!tokenDoc) {
             return res.sendStatus(401);
         }
 
         req.user = {
             id: payload.userId,
-            login: '',  // You might need to fetch user login if needed
+            login: '',
             deviceId: payload.deviceId
         };
 
         return next();
     } catch (e) {
+        console.error('Refresh token validation error:', e);
         return res.sendStatus(401);
     }
 };

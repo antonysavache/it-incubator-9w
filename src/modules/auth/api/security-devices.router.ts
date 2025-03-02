@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { securityDevicesController } from "../../../configs/compositions/security-devices.composition";
-import { jwtAuthMiddleware } from "../../../shared/infrastructures/middlewares/jwt-auth.middleware";
 import { refreshTokenMiddleware } from "../../../shared/infrastructures/middlewares/refresh-token.middleware";
 
 export const securityDevicesRouter = Router();
@@ -16,6 +15,6 @@ securityDevicesRouter.delete('/devices',
 );
 
 securityDevicesRouter.delete('/devices/:deviceId',
-    jwtAuthMiddleware,
+    refreshTokenMiddleware,
     securityDevicesController.deleteDevice
 );

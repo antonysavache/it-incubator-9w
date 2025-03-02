@@ -7,7 +7,6 @@ export const rateLimiterMiddleware = (endpoint: string) => {
         const ip = req.ip || '0.0.0.0';
         const key = `${ip}:${endpoint}`;
 
-        // Initialize trackers if needed
         if (!rateLimiters.has(endpoint)) {
             rateLimiters.set(endpoint, new Map());
         }
@@ -17,22 +16,19 @@ export const rateLimiterMiddleware = (endpoint: string) => {
             endpointLimiter.set(key, []);
         }
 
-        // Get current timestamps and clean old ones
         const now = Date.now();
         const timeWindow = 10 * 1000; // 10 seconds
         const timestamps = endpointLimiter.get(key)!;
 
-        // Remove timestamps older than the window
         const validTimestamps = timestamps.filter(time => now - time < timeWindow);
 
-        // Check if rate limit exceeded
-        if (validTimestamps.length >= 5) { // Limit to 5 requests per 10 seconds
+        if (validTimestamps.length >= 5) {
+            console.log(`Rate limit exceeded for ${key}: ${validTimestamps.length} requests`);
             return res.status(429).json({
                 message: 'Too many requests, please try again later'
             });
         }
 
-        // Add current timestamp and update the list
         validTimestamps.push(now);
         endpointLimiter.set(key, validTimestamps);
 
