@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { UsersQueryRepository } from "../../../users/domain/infrastructures/repositories/users-query.repository";
 import { Result } from "../../../../shared/infrastructures/result";
 import { TokenCommandRepository } from "../../infrastructure/repositories/token-command.repository";
-import { SETTINGS } from "../../../../configs/settings";
 import { LoginDTO } from "../interfaces/auth.interface";
 import { TOKEN_SETTINGS } from "../../domain/interfaces/token.interface";
 import { JwtService } from "../../../../shared/services/jwt.service";
@@ -39,8 +38,8 @@ export class LoginUseCase {
         const deviceTitle = userAgent || 'Unknown Device';
 
         const now = new Date();
-        const accessTokenExpiry = new Date(now.getTime() + 10 * 1000); // 10 seconds
-        const refreshTokenExpiry = new Date(now.getTime() + 20 * 1000); // 20 seconds
+        const accessTokenExpiry = new Date(now.getTime() + 1000 * 1000);
+        const refreshTokenExpiry = new Date(now.getTime() + 20000 * 1000);
 
         const accessToken = JwtService.createJWT(
             user._id.toString(),

@@ -11,8 +11,8 @@ export class TokenCommandRepository extends BaseCommandRepository<TokenDatabaseM
         this.checkInit();
 
         const now = new Date();
-        const accessTokenExpiry = new Date(now.getTime() + 10 * 1000); // 10 seconds
-        const refreshTokenExpiry = new Date(now.getTime() + 20 * 1000); // 20 seconds
+        const accessTokenExpiry = new Date(now.getTime() + 1000 * 1000); // 10 seconds
+        const refreshTokenExpiry = new Date(now.getTime() + 20000 * 1000); // 20 seconds
 
         await this.collection.insertMany([
             {
