@@ -5,6 +5,7 @@ const rateLimiters = new Map<string, Map<string, number[]>>();
 export const rateLimiterMiddleware = (endpoint: string) => {
     return (req: Request, res: Response, next: NextFunction): void | Response => {
         const ip = req.ip || '0.0.0.0';
+
         const key = `${ip}:${endpoint}`;
 
         if (!rateLimiters.has(endpoint)) {
